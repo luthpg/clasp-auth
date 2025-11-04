@@ -5,5 +5,11 @@ branding:
   icon: "lock"
   color: "red"
 runs:
-  using: "node20"
-  main: "dist/action/index.cjs"
+  using: "composite"
+  steps:
+    - name: Restore .clasprc.json
+      shell: bash
+      run: |
+        echo "$CLASPRC_JSON" > base64 -d > ~/.clasprc.json
+      env:
+        CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}

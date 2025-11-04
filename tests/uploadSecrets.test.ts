@@ -73,9 +73,9 @@ describe('uploadSecrets', () => {
 
       uploadSecrets('owner/repo');
 
-      expect(execSync).toHaveBeenCalledTimes(10);
+      expect(execSync).toHaveBeenCalledTimes(1);
       expect(execSync).toHaveBeenCalledWith(
-        'gh secret set CLASP_ACCESS_TOKEN --repo owner/repo --app actions',
+        'gh secret set CLASPRC_JSON -R owner/repo',
         expect.any(Object),
       );
     });
@@ -95,9 +95,9 @@ describe('uploadSecrets', () => {
     test('should delete all clasp secrets', () => {
       deleteSecrets('owner/repo');
 
-      expect(execSync).toHaveBeenCalledTimes(10);
+      expect(execSync).toHaveBeenCalledTimes(1);
       expect(execSync).toHaveBeenCalledWith(
-        'gh secret delete CLASP_ACCESS_TOKEN --repo owner/repo --app actions',
+        'gh secret delete CLASPRC_JSON -R owner/repo',
         expect.any(Object),
       );
     });
@@ -107,7 +107,7 @@ describe('uploadSecrets', () => {
         .spyOn(console, 'warn')
         .mockImplementation(() => {});
       vi.mocked(execSync).mockImplementation((command) => {
-        if (command.includes('CLASP_ACCESS_TOKEN')) {
+        if (command.includes('CLASPRC_JSON')) {
           throw new Error();
         }
         return Buffer.from('');
@@ -116,9 +116,9 @@ describe('uploadSecrets', () => {
       deleteSecrets('owner/repo');
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        '⚠️ Secret CLASP_ACCESS_TOKEN の削除に失敗しました（存在しない可能性あり）',
+        '❌ Failed to delete CLASPRC_JSON from GitHub Secrets (may not exist)',
       );
-      expect(execSync).toHaveBeenCalledTimes(10);
+      expect(execSync).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -15,7 +15,7 @@ coverage
 
 # その他
 .DS_Store
-/build.config.*.ts
+/build.config.ts
 /action.yml
 /biome.json
 /vitest.config.ts

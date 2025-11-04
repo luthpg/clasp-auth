@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process';
-import fs from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 export function checkRepoAccess(repo: string): {
@@ -19,63 +19,54 @@ export function checkRepoAccess(repo: string): {
   }
 }
 
+export const SECRET_KEY = 'CLASPRC_JSON';
+
+/**
+ * ~/.clasprc.json を読み込み、JSON文字列として GitHub Secrets に登録する
+ */
 export function uploadSecrets(repo: string) {
   const clasprcPath = path.join(
     process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'] || '',
     '.clasprc.json',
   );
 
-  if (!fs.existsSync(clasprcPath)) {
+  if (!existsSync(clasprcPath)) {
     console.error('No .clasprc.json found. Run `clasp login` first.');
     process.exit(1);
   }
 
-  const data = JSON.parse(fs.readFileSync(clasprcPath, 'utf8'));
+  // 再JSON化することでフラット化
+  const content = JSON.stringify(
+    JSON.parse(readFileSync(clasprcPath, 'utf8').trim()),
+  );
+  // base64 にエンコード
+  const encoded = Buffer.from(content, 'utf8').toString('base64');
 
-  function setSecret(key: string, value: string) {
-    execSync(`gh secret set ${key} --repo ${repo} --app actions`, {
-      input: value,
+  try {
+    // gh CLI を使って Secret に登録
+    execSync(`gh secret set ${SECRET_KEY} -R ${repo}`, {
+      input: encoded,
       stdio: ['pipe', 'inherit', 'inherit'],
     });
+
+    console.log(`✅ Uploaded .clasprc.json to GitHub Secrets (CLASPRC_JSON)`);
+  } catch {
+    console.error(`❌ Failed to upload .clasprc.json to GitHub Secrets`);
   }
-
-  setSecret('CLASP_ACCESS_TOKEN', data.token.access_token);
-  setSecret('CLASP_REFRESH_TOKEN', data.token.refresh_token);
-  setSecret('CLASP_CLIENT_ID', data.oauth2ClientSettings.clientId);
-  setSecret('CLASP_CLIENT_SECRET', data.oauth2ClientSettings.clientSecret);
-  setSecret('CLASP_REDIRECT_URI', data.oauth2ClientSettings.redirectUri);
-  setSecret('CLASP_SCOPE', data.token.scope);
-  setSecret('CLASP_TOKEN_TYPE', data.token.token_type);
-  setSecret('CLASP_ID_TOKEN', data.token.id_token);
-  setSecret('CLASP_EXPIRY_DATE', String(data.token.expiry_date));
-  setSecret('CLASP_IS_LOCAL_CREDS', String(data.isLocalCreds));
-
-  console.log('✅ Uploaded clasp credentials to GitHub Secrets');
 }
 
+/**
+ * Secrets を削除する
+ */
 export function deleteSecrets(repo: string) {
-  const secrets = [
-    'CLASP_ACCESS_TOKEN',
-    'CLASP_REFRESH_TOKEN',
-    'CLASP_CLIENT_ID',
-    'CLASP_CLIENT_SECRET',
-    'CLASP_REDIRECT_URI',
-    'CLASP_SCOPE',
-    'CLASP_TOKEN_TYPE',
-    'CLASP_ID_TOKEN',
-    'CLASP_EXPIRY_DATE',
-    'CLASP_IS_LOCAL_CREDS',
-  ];
-
-  for (const name of secrets) {
-    try {
-      execSync(`gh secret delete ${name} --repo ${repo} --app actions`, {
-        stdio: 'inherit',
-      });
-    } catch {
-      console.warn(
-        `⚠️ Secret ${name} の削除に失敗しました（存在しない可能性あり）`,
-      );
-    }
+  try {
+    execSync(`gh secret delete CLASPRC_JSON -R ${repo}`, {
+      stdio: 'inherit',
+    });
+    console.log(`🗑️ Deleted ${SECRET_KEY} from GitHub Secrets`);
+  } catch {
+    console.warn(
+      '❌ Failed to delete CLASPRC_JSON from GitHub Secrets (may not exist)',
+    );
   }
 }
