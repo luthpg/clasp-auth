@@ -1,5 +1,9 @@
 name: "Setup clasp auth"
 description: "Generate .clasprc.json from GitHub Secrets"
+author: "ciderjs/luth"
+branding:
+  icon: "lock"
+  color: "red"
 runs:
   using: "node20"
   main: "dist/action.js"
