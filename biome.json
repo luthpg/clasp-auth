@@ -7,12 +7,13 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["src/**/*", "tests/**/*", "./*.{ts,tsx,json}"]
+    "includes": ["src/**/*", "bin/**/*", "tests/**/*", "./*.{ts,tsx,json}"]
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "indentWidth": 2
+    "indentWidth": 2,
+    "lineEnding": "lf"
   },
   "linter": {
     "enabled": true,

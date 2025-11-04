@@ -34,7 +34,7 @@ jobs:
         run: pnpm check
 
       - name: Build
-        run: pnpm build:cli && pnpm build:action
+        run: pnpm build
 
       - name: Test
         run: pnpm test

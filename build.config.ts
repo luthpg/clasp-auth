@@ -1,13 +1,8 @@
 import { defineBuildConfig } from 'unbuild';
 
 export default defineBuildConfig({
-  entries: [
-    {
-      input: 'src/cli',
-      outDir: 'dist/cli',
-      name: 'cli/index',
-    },
-  ],
+  entries: ['src/cli'],
+  outDir: 'dist',
   clean: true,
   declaration: false,
   rollup: {
