@@ -1,0 +1,5 @@
+name: "Setup clasp auth"
+description: "Generate .clasprc.json from GitHub Secrets"
+runs:
+  using: "node20"
+  main: "dist/action.js"

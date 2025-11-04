@@ -1,0 +1,57 @@
+{
+  "name": "@ciderjs/clasp-auth",
+  "version": "0.1.0",
+  "description": "Manage clasp credential data to use GitHub Actions secrets",
+  "main": "dist/cli.cjs",
+  "types": "dist/cli.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.mjs",
+      "require": "./dist/cli.cjs"
+    },
+    "./action": {
+      "types": "./dist/action.d.ts",
+      "import": "./dist/action.mjs",
+      "require": "./dist/action.cjs"
+    }
+  },
+  "bin": {
+    "clasp-auth": "bin/clasp-auth.js"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "check": "biome check",
+    "test": "vitest run --coverage"
+  },
+  "keywords": [
+    "google-apps-script",
+    "@google/clasp",
+    "ci",
+    "cd",
+    "github-actions",
+    "github-actions-secrets"
+  ],
+  "author": "ciderjs/luth",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:luthpg/clasp-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luthpg/clasp-auth/issues"
+  },
+  "packageManager": "pnpm@10.18.3",
+  "dependencies": {
+    "@inquirer/prompts": "^7.9.0",
+    "commander": "^14.0.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.3",
+    "@types/node": "^24.10.0",
+    "@vitest/coverage-v8": "4.0.6",
+    "typescript": "^5.9.3",
+    "unbuild": "^3.6.1",
+    "vitest": "^4.0.6"
+  }
+}

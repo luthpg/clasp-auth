@@ -1,0 +1,17 @@
+# ソース
+/src
+/tsconfig.json
+
+# ビルドキャッシュ
+/node_modules
+/dist/*.map
+
+# 開発用
+/.github
+/.vscode
+/tests
+coverage
+*.log
+
+# その他
+.DS_Store
