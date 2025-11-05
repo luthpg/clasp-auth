@@ -4,6 +4,11 @@ author: "ciderjs/luth"
 branding:
   icon: "lock"
   color: "red"
+inputs:
+  json:
+    description: "Uploaded .clasprc.json as Base64-encoded string"
+    required: true
+    default: "{}"
 runs:
   using: "composite"
   steps:
@@ -12,4 +17,4 @@ runs:
       run: |
         echo "$CLASPRC_JSON" > base64 -d > ~/.clasprc.json
       env:
-        CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+        CLASPRC_JSON: ${{ inputs.json }}
