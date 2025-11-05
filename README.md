@@ -117,7 +117,9 @@ Workflow 内で Secret をファイルに復元し、`clasp` が利用できる�
            node-version: 20
  
 +      - name: Setup clasp auth
-+        uses: ciderjs/clasp-auth@v1
++        uses: ciderjs/clasp-auth
++        with:
++          json: {{ secrets.CLASPRC_JSON }}
 
        - name: Install clasp
          run: npm install -g @google/clasp

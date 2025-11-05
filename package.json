@@ -29,7 +29,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:ciderjs/clasp-auth.git"
+    "url": "git+ssh://git@github.com/ciderjs/clasp-auth.git"
   },
   "bugs": {
     "url": "https://github.com/ciderjs/clasp-auth/issues"
