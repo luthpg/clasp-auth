@@ -5,6 +5,7 @@ import path from 'node:path';
 export function checkRepoAccess(repo: string): {
   exists: boolean;
   canPush: boolean;
+  error?: string;
 } {
   try {
     // リポジトリ情報を取得
@@ -14,9 +15,30 @@ export function checkRepoAccess(repo: string): {
     // push 権限の有無を確認
     const canPush = data.permissions?.push === true;
     return { exists: true, canPush };
-  } catch {
-    return { exists: false, canPush: false };
+  } catch (error) {
+    // エラー理由を判別
+    const message = error instanceof Error ? error.message : '';
+    if (message.includes('404')) {
+      return { exists: false, canPush: false, error: 'Repository not found' };
+    }
+    if (message.includes('403')) {
+      return { exists: true, canPush: false, error: 'Permission denied' };
+    }
+    return { exists: false, canPush: false, error: 'Unknown error' };
   }
+}
+
+export function validateRepoAccess(repo: string) {
+  const { exists, canPush } = checkRepoAccess(repo);
+  if (!exists) {
+    console.error(`❌ リポジトリ "${repo}" は存在しません。`);
+    return false;
+  }
+  if (!canPush) {
+    console.error(`❌ リポジトリ "${repo}" に対する編集権限がありません。`);
+    return false;
+  }
+  return true;
 }
 
 export const SECRET_KEY = 'CLASPRC_JSON';
@@ -52,6 +74,7 @@ export function uploadSecrets(repo: string) {
     console.log(`✅ Uploaded .clasprc.json to GitHub Secrets (CLASPRC_JSON)`);
   } catch {
     console.error(`❌ Failed to upload .clasprc.json to GitHub Secrets`);
+    process.exit(1);
   }
 }
 

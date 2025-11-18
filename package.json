@@ -1,6 +1,6 @@
 {
   "name": "@ciderjs/clasp-auth",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Manage clasp credential data to use GitHub Actions secrets",
   "main": "dist/cli.cjs",
   "exports": {
@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "unbuild --config",
-    "check": "biome check",
+    "check": "biome check --write",
     "test": "vitest run --coverage"
   },
   "keywords": [
